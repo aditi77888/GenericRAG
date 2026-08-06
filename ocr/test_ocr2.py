@@ -1,10 +1,11 @@
 from ocr.ocr_factory import OCRFactory
+from loaders.image_loader import ImageLoader
 
 ocr = OCRFactory.create("easyocr")
 
-result = ocr.extract("sample.png")
+loader = ImageLoader(ocr)
 
-print(result.text)
-print
-print(result.confidence)
-print(result.metadata["engine"])
+documents = loader.load("sample.png")
+
+print(documents[0].content)
+print(documents[0].metadata)
