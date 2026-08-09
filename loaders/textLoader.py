@@ -5,7 +5,7 @@ from models.document import Document
 
 
 class TXTLoader(BaseLoader):
-
+    SUPPORTED_EXTENSIONS = {".txt"}
     def load(self, source):
 
         path = self._validate_file(source)

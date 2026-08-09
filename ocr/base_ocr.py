@@ -1,18 +1,19 @@
 from abc import ABC, abstractmethod
-from models.ocr_result import OCRResult
+
 
 class BaseOCR(ABC):
-    """
-        Base class for all OCR engines.
-    """
+
     @abstractmethod
-    def extract(self, image) -> str:
+    def extract(self, source):
         """
-                Extract text from an image.
-                Args:
-                    image:
-                        PIL Image / NumPy array.
-                Returns:
-                    OCRResult
-                """
+        Performs OCR on the given source.
+
+        Parameters
+        ----------
+        source : Path
+
+        Returns
+        -------
+        OCRResponse
+        """
         pass

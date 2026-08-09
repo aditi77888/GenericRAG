@@ -7,8 +7,8 @@ class EasyOCREngine(BaseOCR):
     def __init__(self):
         self.reader = easyocr.Reader(["en"], gpu=False)
 
-    def extract(self, image_path: str) -> OCRResult:
-        detections = self.reader.readtext(image_path)
+    def extract(self, image: str) -> OCRResult:
+        detections = self.reader.readtext(image)
 
         texts = []
         confidences = []

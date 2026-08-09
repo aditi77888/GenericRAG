@@ -1,12 +1,16 @@
-from ocr.easy_ocr_engine import EasyOCREngine
-from ocr.paddleocr_engine import PaddleOCREngine
+from ocr.mistral_ocr import MistralOCR
+
 
 class OCRFactory:
+
     @staticmethod
-    def create(engine: str):
+    def create(engine="mistral"):
+
         engine = engine.lower()
 
-        if engine == 'easyocr':
-            return EasyOCREngine()
+        if engine == "mistral":
+            return MistralOCR()
 
-        raise ValueError(f"Unsupported ocr engine: {engine}")
+        raise ValueError(
+            f"Unknown OCR engine: {engine}"
+        )

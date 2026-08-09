@@ -1,7 +1,5 @@
-from PIL import Image
-import numpy as np
-from ocr.paddleocr_engine import PaddleOCREngine
+from ocr.mistral_ocr import MistralOCR
 
-ocr = PaddleOCREngine()
-result = ocr.extract("sample.png")
-print(result)
+ocr = MistralOCR()
+
+ocr.extract("files/sample.png")

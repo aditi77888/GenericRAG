@@ -1,5 +1,5 @@
 import fitz
-
+from PIL import Image
 from models.document import Document
 from parsers.base_parser import BaseParser
 
@@ -14,21 +14,17 @@ class PyMuPDFParser(BaseParser):
 
         for page_number, page in enumerate(pdf):
 
-            text = page.get_text()
+            text = self.extract_text(page)
 
             documents.append(
 
-                Document(
+                self.create_document(
 
-                    content=text,
+                    text=text,
 
-                    metadata={
+                    source=source,
 
-                        "source": source,
-
-                        "page": page_number + 1
-
-                    }
+                    page_number=page_number + 1
 
                 )
 
@@ -37,3 +33,49 @@ class PyMuPDFParser(BaseParser):
         pdf.close()
 
         return documents
+
+    def extract_text(self, page):
+
+        return page.get_text("text").strip()
+
+    def create_document(
+            self,
+            text,
+            source,
+            page_number
+    ):
+
+        return Document(
+
+            content=text,
+
+            metadata={
+
+                "source": str(source),
+
+                "page": page_number
+
+            }
+
+        )
+
+    def render_page(
+            self,
+            page,
+            dpi=300
+    ):
+        """
+        Render a PDF page to a PIL Image.
+        """
+
+        pixmap = page.get_pixmap(dpi=dpi)
+
+        return Image.frombytes(
+
+            "RGB",
+
+            [pixmap.width, pixmap.height],
+
+            pixmap.samples
+
+        )
