@@ -24,28 +24,45 @@ class MistralOCR(BaseOCR):
     def extract(
             self,
             source,
-            output_format="markdown"
+            output_format="markdown",
+            max_retries=3
     ):
 
         source = Path(source)
 
         start_time = time.perf_counter()
 
-        try:
+        last_error = None
 
-            uploaded_file = self._upload_file(source)
+        for attempt in range(1, max_retries + 1):
 
-            return self._process_ocr(
-                uploaded_file.id,
-                output_format,
-                start_time
-            )
+            try:
 
-        except Exception as e:
+                uploaded_file = self._upload_file(source)
 
-            raise RuntimeError(
-                f"Mistral OCR failed : {e}"
-            ) from e
+                return self._process_ocr(
+                    uploaded_file.id,
+                    output_format,
+                    start_time
+                )
+
+            except Exception as e:
+
+                last_error = e
+
+                print(
+                    f"[MISTRAL OCR] Attempt {attempt}/"
+                    f"{max_retries} failed: {e}",
+                    flush=True
+                )
+
+                if attempt < max_retries:
+                    time.sleep(2 ** attempt)  # 2s, 4s, 8s
+
+        raise RuntimeError(
+            f"Mistral OCR failed after {max_retries} "
+            f"attempts : {last_error}"
+        ) from last_error
 
     def extract_image(
             self,

@@ -1,0 +1,18 @@
+# 💬 Chat History
+
+### 1. User
+good morning
+
+**Assistant:**
+Hey! What can I help you with?
+
+---
+
+### 2. User
+hey
+
+**Assistant:**
+Hey! What can I help you with?
+
+---
+

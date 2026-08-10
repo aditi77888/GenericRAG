@@ -15,17 +15,13 @@ class RAGAgent(BaseAgent):
             AnswerGuardrailAgent()
         )
 
-    # =========================================================
-    # HANDLE
-    # =========================================================
-
     def handle(
-        self,
-        query: str,
-        document_id: str,
-        intent: str = "document_question"
+            self,
+            query: str,
+            namespace: str,
+            chat_history: str = "",
+            intent: str = "document_question"
     ):
-
         print(
             "[RAG AGENT] Query:",
             query,
@@ -39,18 +35,15 @@ class RAGAgent(BaseAgent):
         )
 
         print(
-            "[RAG AGENT] Document ID:",
-            document_id,
+            "[RAG AGENT] Namespace:",
+            namespace,
             flush=True
         )
 
-        # =====================================================
-        # RAG PIPELINE
-        # =====================================================
-
         result = self.rag.ask(
             question=query,
-            document_id=document_id
+            namespace=namespace,
+            chat_history=chat_history
         )
 
         # =====================================================
@@ -58,12 +51,6 @@ class RAGAgent(BaseAgent):
         # =====================================================
 
         if not result["chunks"]:
-
-            print(
-                "[RAG AGENT] No relevant context found.",
-                flush=True
-            )
-
             return {
                 "answer": result["answer"],
                 "sources": result["sources"],
@@ -85,11 +72,8 @@ class RAGAgent(BaseAgent):
         )
 
         validation = self.answer_guardrail.handle(
-
             question=query,
-
             answer=result["answer"],
-
             chunks=result["chunks"]
         )
 
@@ -99,23 +83,14 @@ class RAGAgent(BaseAgent):
             flush=True
         )
 
-        # =====================================================
-        # RETURN
-        # =====================================================
-
         return {
-
             "answer": validation["answer"],
-
             "sources": (
                 result["sources"]
                 if validation["allowed"]
                 else []
             ),
-
             "chunks": result["chunks"],
-
             "agent": "rag",
-
             "guardrail": validation
         }

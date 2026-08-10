@@ -1,0 +1,64 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **aditi_Resume.pdf**  
+_7 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+whats on first page
+
+**Assistant:**
+The first page of the document contains information about Aditi's resume, including her projects such as YouTube RAG Chatbot, Parkinson’s Disease Prediction, Emotion-Based Music Recommender, and KisanSaathi. It also lists her technical skills, education, and contact information.
+
+---
+
+### 2. User
+what are aditi's skilss
+
+**Assistant:**
+Aditi's skills include: 
+Languages: Python, Javascript, SQL.
+Frameworks: Flask, PyTorch, OpenCV, Numpy, Pandas, Sklearn, Streamlit, LangChain.
+Tools: Git, GitHub, Jupyter Notebook, Pycharm.
+Database: Oracle, PostgreSQL.
+She is also proficient in operating systems: Linux, Windows.
+
+---
+
+### 3. User
+how are you?
+
+**Assistant:**
+I'm doing well, thanks for asking! What can I help you with?
+
+---
+
+### 4. User
+bonjour
+
+**Assistant:**
+Goodbye! Feel free to come back anytime.
+
+---
+
+### 5. User
+hola
+
+**Assistant:**
+Take care!
+
+---
+
+### 6. User
+aap kaise ho
+
+**Assistant:**
+Main bilkul theek hoon, poochne ke liye shukriya! Bataiye, kya help chahiye?
+
+---
+

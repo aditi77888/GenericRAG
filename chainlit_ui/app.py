@@ -1,517 +1,610 @@
 import sys
+import uuid
+import asyncio
 from pathlib import Path
+import os
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 sys.path.insert(0, str(PROJECT_ROOT))
 
 import chainlit as cl
+from memory.chat_memory import ChatMemory
+import httpx
 
-from chunkers.recursive_chunker import RecursiveChunker
-from embeddings.embedding_factory import EmbeddingFactory
-from llms.llm_factory import LLMFactory
-from prompts.prompt_builder import PromptBuilder
-from retriever.retriever_factory import RetrieverFactory
-from vectorstore.vectorstore_factory import VectorStoreFactory
-from pipelines.rag_pipeline import RAGPipeline
+API_URL = "http://127.0.0.1:8001"
 
-from agents.guardrail_agent import GuardrailAgent
-from agents.supervisor_agent import SupervisorAgent
-from agents.greeting_agent import GreetingAgent
-from agents.rag_agent import RAGAgent
+async def update_chat_history_sidebar():
 
-_RAG_PIPELINE = None
+    chat_memory = cl.user_session.get("chat_memory")
+    documents = cl.user_session.get("documents") or []
 
-# =========================================================
-# CREATE RAG PIPELINE
-# =========================================================
-
-
-_RAG_PIPELINE = None
-
-
-def create_rag_pipeline():
-
-    global _RAG_PIPELINE
+    sidebar_content = "# 💬 Chat History\n\n"
 
     # =====================================================
-    # REUSE EXISTING PIPELINE
+    # UPLOADED DOCUMENTS
     # =====================================================
 
-    if _RAG_PIPELINE is not None:
+    sidebar_content += "## 📄 Uploaded Documents\n\n"
 
-        print(
-            "[RAG INIT] Reusing existing RAG pipeline...",
-            flush=True
+    if documents:
+
+        for document in documents:
+
+            file_name = document.get(
+                "file_name",
+                document.get("name", "Unknown PDF")
+            )
+
+            chunk_count = document.get(
+                "chunk_count",
+                "?"
+            )
+
+            sidebar_content += (
+                f"📄 **{file_name}**  \n"
+                f"_{chunk_count} chunks indexed_\n\n"
+            )
+
+    else:
+
+        sidebar_content += (
+            "_No documents uploaded yet._\n\n"
         )
 
-        return _RAG_PIPELINE
+    sidebar_content += "---\n\n"
 
     # =====================================================
-    # CREATE PIPELINE
+    # CHAT HISTORY
     # =====================================================
 
-    print(
-        "\n[RAG INIT] Starting pipeline creation...",
-        flush=True
+    sidebar_content += "## 💬 Conversations\n\n"
+
+    if chat_memory is None or not chat_memory.turns:
+
+        sidebar_content += "_No conversation yet._\n"
+
+    else:
+
+        for i, turn in enumerate(
+            chat_memory.turns,
+            start=1
+        ):
+
+            sidebar_content += (
+                f"### {i}. User\n"
+                f"{turn['question']}\n\n"
+                f"**Assistant:**\n"
+                f"{turn['answer']}\n\n"
+                "---\n\n"
+            )
+
+    # =====================================================
+    # UPDATE SIDEBAR
+    # =====================================================
+
+    await cl.ElementSidebar.set_title(
+        "Chat History"
     )
 
-    print(
-        "[RAG INIT] Creating chunker...",
-        flush=True
+    await cl.ElementSidebar.set_elements(
+        [
+            cl.Text(
+                name="chat_history",
+                content=sidebar_content
+            )
+        ]
     )
-
-    chunker = RecursiveChunker(
-        chunk_size=500,
-        chunk_overlap=50
-    )
-
-    print(
-        "[RAG INIT] Creating embedding model...",
-        flush=True
-    )
-
-    embedding_model = EmbeddingFactory.create(
-        "bge"
-    )
-
-    print(
-        "[RAG INIT] Embedding model created!",
-        flush=True
-    )
-
-    print(
-        "[RAG INIT] Creating vector store...",
-        flush=True
-    )
-
-    vector_store = VectorStoreFactory.create(
-        "pinecone"
-    )
-
-    print(
-        "[RAG INIT] Vector store created!",
-        flush=True
-    )
-
-    print(
-        "[RAG INIT] Creating retriever...",
-        flush=True
-    )
-
-    retriever = RetrieverFactory.create(
-        retriever_name="vector",
-        embedding_model=embedding_model,
-        vector_store=vector_store
-    )
-
-    print(
-        "[RAG INIT] Retriever created!",
-        flush=True
-    )
-
-    print(
-        "[RAG INIT] Creating LLM...",
-        flush=True
-    )
-
-    llm = LLMFactory.create(
-        llm_name="fallback"
-    )
-
-    print(
-        "[RAG INIT] LLM created!",
-        flush=True
-    )
-
-    print(
-        "[RAG INIT] Creating prompt builder...",
-        flush=True
-    )
-
-    prompt_builder = PromptBuilder()
-
-    print(
-        "[RAG INIT] Prompt builder created!",
-        flush=True
-    )
-
-    _RAG_PIPELINE = RAGPipeline(
-        chunker=chunker,
-        embedding_model=embedding_model,
-        vector_store=vector_store,
-        retriever=retriever,
-        llm=llm,
-        prompt_builder=prompt_builder
-    )
-
-    print(
-        "[RAG INIT] COMPLETE!",
-        flush=True
-    )
-
-    return _RAG_PIPELINE
-# =========================================================
-# CHAT START
-# =========================================================
-
-
 
 @cl.on_chat_start
 async def start():
 
-    print("\n[CHAINLIT] on_chat_start triggered", flush=True)
-
-    guardrail = GuardrailAgent()
-    supervisor = SupervisorAgent()
-    greeting_agent = GreetingAgent()
-
-    cl.user_session.set(
-        "guardrail",
-        guardrail
+    print(
+        "\n[CHAINLIT] on_chat_start triggered",
+        flush=True
+    )
+    # =====================================================
+    # CREATE CHAT MEMORY
+    # =====================================================
+    chat_memory = ChatMemory(
+        max_turns=6
     )
 
     cl.user_session.set(
-        "supervisor",
-        supervisor
+        "chat_memory",
+        chat_memory
     )
 
+    # =====================================================
+    # CREATE SESSION NAMESPACE
+    # =====================================================
+
+    namespace = f"session_{uuid.uuid4().hex}"
+
     cl.user_session.set(
-        "greeting_agent",
-        greeting_agent
+        "namespace",
+        namespace
     )
+
+    # =====================================================
+    # DOCUMENT LIST
+    # =====================================================
+
+    cl.user_session.set(
+        "documents",
+        []
+    )
+
+    # =====================================================
+    # SIDEBAR
+    # =====================================================
+
+    await update_chat_history_sidebar()
 
     print(
-        "[CHAINLIT] Agents initialized",
+        "[CHAINLIT] Session initialized",
         flush=True
     )
 
-    await cl.Message(
-        content="## 📄 GenericRAG\n\n"
-                "Upload a PDF and I will process it for you."
-    ).send()
+@cl.on_message
+async def on_message(message: cl.Message):
 
-    print("[CHAINLIT] Welcome message sent", flush=True)
+    query = (
+        message.content or ""
+    ).strip()
 
-    files = await cl.AskFileMessage(
-        content="📄 Please upload a PDF to begin.",
-        accept=["application/pdf"],
-        max_size_mb=20,
-        max_files=1,
-        timeout=300,
-        raise_on_timeout=False
-    ).send()
+    print(
+        "\n" + "=" * 70,
+        flush=True
+    )
 
-    print("[CHAINLIT] AskFileMessage completed", flush=True)
+    print(
+        "[CHAINLIT] USER QUERY:",
+        query,
+        flush=True
+    )
 
-    if not files:
+    print(
+        "=" * 70,
+        flush=True
+    )
 
-        await cl.Message(
-            content="❌ No PDF was uploaded."
-        ).send()
+    # =====================================================
+    # SESSION DATA
+    # =====================================================
+
+    namespace = cl.user_session.get(
+        "namespace"
+    )
+
+    chat_memory = cl.user_session.get(
+        "chat_memory"
+    )
+
+    documents = (
+        cl.user_session.get(
+            "documents"
+        )
+        or []
+    )
+
+    # =====================================================
+    # HANDLE PDF UPLOAD
+    # =====================================================
+
+    message_elements = (
+            message.elements
+            or []
+    )
+
+    print(
+        f"[CHAINLIT] Message elements: {len(message_elements)}",
+        flush=True
+    )
+
+    pdf_elements = []
+
+    for element in message_elements:
+
+        file_name = (
+                getattr(
+                    element,
+                    "name",
+                    ""
+                )
+                or ""
+        )
+
+        mime_type = (
+                getattr(
+                    element,
+                    "mime",
+                    ""
+                )
+                or ""
+        )
+
+        file_path = getattr(
+            element,
+            "path",
+            None
+        )
+
+        print(
+            "[CHAINLIT] Element:",
+            {
+                "name": file_name,
+                "mime": mime_type,
+                "path": file_path
+            },
+            flush=True
+        )
+
+        if file_name.lower().endswith(".pdf"):
+            pdf_elements.append(
+                element
+            )
+    # =====================================================
+    # PROCESS PDFs
+    # =====================================================
+
+    if pdf_elements:
+
+        for element in pdf_elements:
+
+            file_name = getattr(
+                element,
+                "name",
+                "document.pdf"
+            )
+
+            status_msg = cl.Message(
+                content=(
+                    f"📄 **{file_name}** — processing..."
+                )
+            )
+
+            await status_msg.send()
+
+            try:
+
+                result = await upload_pdf_to_server(
+                    element,
+                    namespace
+                )
+
+                if not result.get(
+                    "success",
+                    False
+                ):
+
+                    raise Exception(
+                        result.get(
+                            "error",
+                            "Unknown ingestion error"
+                        )
+                    )
+
+                document = result.get(
+                    "document"
+                )
+
+                if document:
+
+                    documents.append(
+                        document
+                    )
+
+                cl.user_session.set(
+                    "documents",
+                    documents
+                )
+
+                status_msg.content = (
+                    f"📄 **{file_name}**\n"
+                    f"✓ Document uploaded"
+                )
+
+                await status_msg.update()
+
+                print(
+                    f"[CHAINLIT] Uploaded: {file_name}",
+                    flush=True
+                )
+
+            except Exception as e:
+
+                print(
+                    "[CHAINLIT] UPLOAD ERROR:",
+                    repr(e),
+                    flush=True
+                )
+
+                status_msg.content = (
+                    f"❌ **{file_name}** failed to upload."
+                )
+
+                await status_msg.update()
+
+        await update_chat_history_sidebar()
+
+        # -------------------------------------------------
+        # If only PDF was attached, stop.
+        # -------------------------------------------------
+
+        if not query:
+
+            return
+
+    # =====================================================
+    # NO QUERY
+    # =====================================================
+
+    if not query:
 
         return
 
-    uploaded_file = files[0]
+    # =====================================================
+    # CHECK DOCUMENT
+    # =====================================================
 
-    print(
-        f"[CHAINLIT] File received: {uploaded_file.name}",
-        flush=True
+    # We only need this check for RAG questions.
+    # The server itself decides whether the query
+    # is greeting or RAG.
+
+    # =====================================================
+    # PREPARE CHAT HISTORY
+    # =====================================================
+
+    chat_history = (
+        chat_memory.get_history_text()
+        if chat_memory is not None
+        else None
     )
 
-    await cl.Message(
-        content=(
-            f"📄 **{uploaded_file.name}** uploaded.\n\n"
-            "⏳ Processing your document..."
-        )
-    ).send()
-
-    print(
-        "[CHAINLIT] Processing message sent",
-        flush=True
-    )
+    # =====================================================
+    # SEND QUERY TO FASTAPI
+    # =====================================================
 
     try:
 
-        print(
-            "[CHAINLIT] Creating RAG pipeline...",
-            flush=True
-        )
-
-        rag = create_rag_pipeline()
-
-        print(
-            "[CHAINLIT] RAG pipeline created!",
-            flush=True
-        )
-
-        cl.user_session.set(
-            "rag",
-            rag
+        result = await ask_rag_server(
+            question=query,
+            namespace=namespace,
+            chat_history=chat_history
         )
 
         print(
-            "[CHAINLIT] RAG stored in session",
+            "[CHAINLIT] SERVER RESPONSE:",
+            result,
             flush=True
         )
 
-        document_id = rag.ingest(
-            uploaded_file.path
+        answer = result.get(
+            "answer",
+            "I couldn't generate a response."
         )
 
-        print(
-            f"[CHAINLIT] Document indexed: {document_id}",
-            flush=True
+        sources = result.get(
+            "sources",
+            []
         )
 
-        cl.user_session.set(
-            "document_id",
-            document_id
-        )
+        response = answer
 
-        cl.user_session.set(
-            "filename",
-            uploaded_file.name
-        )
+        # =================================================
+        # SOURCES
+        # =================================================
 
-        print(
-            "[CHAINLIT] Session data stored",
-            flush=True
-        )
+        if sources:
+
+            response += (
+                "\n\n### Sources\n"
+            )
+
+            for source in sources:
+
+                response += (
+                    f"- {source}\n"
+                )
+
+        # =================================================
+        # SEND RESPONSE
+        # =================================================
 
         await cl.Message(
-            content=(
-                f"## ✅ {uploaded_file.name} is ready!\n\n"
-                "Your document has been processed successfully.\n\n"
-                "You can now ask questions about the PDF."
-            )
+            content=response
         ).send()
 
-        print(
-            "[CHAINLIT] SUCCESS MESSAGE SENT",
-            flush=True
-        )
+        # =================================================
+        # MEMORY
+        # =================================================
+
+        if chat_memory is not None:
+
+            chat_memory.add_turn(
+                query,
+                answer
+            )
+
+            await update_chat_history_sidebar()
 
     except Exception as e:
 
         print(
-            "[CHAINLIT] ERROR:",
+            "[CHAINLIT] SERVER ERROR:",
             repr(e),
             flush=True
         )
 
         await cl.Message(
             content=(
-                "❌ **Failed to process the PDF.**\n\n"
-                f"Error: `{str(e)}`"
+                "Sorry, something went wrong while "
+                "processing your request."
             )
         ).send()
 
-# =========================================================
-# MESSAGE HANDLER
-# =========================================================
 
-@cl.on_message
-async def on_message(message: cl.Message):
+async def upload_pdf_to_server(
+    element,
+    namespace
+):
 
-    query = message.content.strip()
+    file_name = (
+        getattr(
+            element,
+            "name",
+            "document.pdf"
+        )
+        or "document.pdf"
+    )
 
-    print("\n" + "=" * 70, flush=True)
-    print("[CHAINLIT] USER QUERY:", query)
-    print("=" * 70, flush=True)
+    file_path = getattr(
+        element,
+        "path",
+        None
+    )
 
-    # =====================================================
-    # 1. GUARDRAIL
-    # =====================================================
-    # GET AGENTS FROM SESSION
-    # =====================================================
+    print(
+        f"[CHAINLIT] File detected: {file_name}",
+        flush=True
+    )
 
-    guardrail = cl.user_session.get("guardrail")
-    supervisor = cl.user_session.get("supervisor")
-    greeting_agent = cl.user_session.get("greeting_agent")
+    print(
+        f"[CHAINLIT] File path: {file_path}",
+        flush=True
+    )
 
-    if (
-            guardrail is None
-            or supervisor is None
-            or greeting_agent is None
+    if not file_path:
+
+        raise ValueError(
+            f"Uploaded file path is unavailable for {file_name}."
+        )
+
+    if not os.path.exists(file_path):
+
+        raise FileNotFoundError(
+            f"Uploaded file does not exist: {file_path}"
+        )
+
+    file_size = os.path.getsize(
+        file_path
+    )
+
+    print(
+        f"[CHAINLIT] File size: {file_size} bytes",
+        flush=True
+    )
+
+    if file_size == 0:
+
+        raise ValueError(
+            f"Uploaded file is empty: {file_name}"
+        )
+
+    print(
+        f"[CHAINLIT] Sending {file_name} to FastAPI...",
+        flush=True
+    )
+
+    timeout = httpx.Timeout(
+        connect=30.0,
+        read=600.0,
+        write=600.0,
+        pool=30.0
+    )
+
+    with open(
+        file_path,
+        "rb"
+    ) as f:
+
+        files = {
+            "file": (
+                file_name,
+                f,
+                "application/pdf"
+            )
+        }
+
+        data = {
+            "namespace": namespace
+        }
+
+        async with httpx.AsyncClient(
+            timeout=timeout
+        ) as client:
+
+            response = await client.post(
+                f"{API_URL}/ingest",
+                files=files,
+                data=data
+            )
+
+    print(
+        f"[CHAINLIT] FastAPI status: {response.status_code}",
+        flush=True
+    )
+
+    print(
+        f"[CHAINLIT] FastAPI response: {response.text}",
+        flush=True
+    )
+
+    response.raise_for_status()
+
+    result = response.json()
+
+    if not result.get(
+        "success",
+        False
     ):
-        await cl.Message(
-            content=(
-                "⚠️ Agent system is not initialized. "
-                "Please refresh the page."
+
+        raise RuntimeError(
+            result.get(
+                "error",
+                "FastAPI ingestion failed."
             )
-        ).send()
-
-        return
-
-
-
-    # =====================================================
-    # 1. GUARDRAIL
-    # =====================================================
-
-    print(
-        "[CHAINLIT] Running GuardrailAgent...",
-        flush=True
-    )
-
-    guardrail_result = guardrail.handle(
-        query=query
-    )
-    print(
-        "[CHAINLIT] GUARDRAIL:",
-        guardrail_result,
-        flush=True
-    )
-
-    if not guardrail_result["allowed"]:
-
-        await cl.Message(
-            content="I can't help with that request."
-        ).send()
-
-        return
-
-    # =====================================================
-    # 2. SUPERVISOR
-    # =====================================================
-
-    print(
-        "[CHAINLIT] Running SupervisorAgent...",
-        flush=True
-    )
-
-    route = supervisor.handle(query)
-
-    print(
-        "[CHAINLIT] SUPERVISOR:",
-        route,
-        flush=True
-    )
-
-    # =====================================================
-    # 3. GREETING
-    # =====================================================
-
-    if route["agent"] == "greeting":
-
-        print(
-            "[CHAINLIT] Routing → GreetingAgent",
-            flush=True
         )
 
-        response = greeting_agent.handle(
-            query=query,
-            intent=route["intent"],
-            language=route["language"]
-        )
+    return result
 
-        await cl.Message(
-            content=response
-        ).send()
+async def ask_rag_server(
+    question,
+    namespace,
+    chat_history
+):
 
-        return
-
-    # =====================================================
-    # 4. RAG REQUIRES DOCUMENT
-    # =====================================================
-
-    rag_pipeline = cl.user_session.get("rag")
-    document_id = cl.user_session.get("document_id")
-
-    if rag_pipeline is None or document_id is None:
-
-        await cl.Message(
-            content=(
-                "📄 Please upload a PDF first so I can "
-                "answer document-related questions."
-            )
-        ).send()
-
-        return
-
-    # =====================================================
-    # 5. RAG AGENT
-    # =====================================================
-
-    if route["agent"] == "rag":
-
-        print(
-            "[CHAINLIT] Routing → RAGAgent",
-            flush=True
-        )
-
-        rag_agent = RAGAgent(
-            rag_pipeline=rag_pipeline
-        )
-
-        try:
-
-            result = rag_agent.handle(
-                query=query,
-                document_id=document_id,
-                intent=route.get(
-                    "intent",
-                    "document_question"
-                )
-            )
-
-            print(
-                "[CHAINLIT] RAG RESULT:",
-                result,
-                flush=True
-            )
-
-            answer = result.get(
-                "answer",
-                "I don't have enough information to answer this question."
-            )
-
-            sources = result.get(
-                "sources",
-                []
-            )
-
-            response = answer
-
-            if sources:
-
-                response += "\n\n### Sources\n"
-
-                for source in sources:
-                    response += f"- {source}\n"
-
-            await cl.Message(
-                content=response
-            ).send()
-
-        except Exception as e:
-
-            print(
-                "[CHAINLIT] RAG ERROR:",
-                repr(e),
-                flush=True
-            )
-
-            await cl.Message(
-                content=(
-                    "Sorry, something went wrong while "
-                    "processing your question."
-                )
-            ).send()
-
-        return
-
-    # =====================================================
-    # 6. UNKNOWN ROUTE
-    # =====================================================
+    payload = {
+        "question": question,
+        "namespace": namespace,
+        "chat_history": chat_history
+    }
 
     print(
-        "[CHAINLIT] ERROR: Unknown agent:",
-        route.get("agent"),
+        "[CHAINLIT] Sending query to FastAPI...",
         flush=True
     )
 
-    await cl.Message(
-        content="I couldn't determine how to handle that request."
-    ).send()
+    timeout = httpx.Timeout(
+        connect=30.0,
+        read=600.0,
+        write=600.0,
+        pool=30.0
+    )
+
+    async with httpx.AsyncClient(
+            timeout=timeout
+    ) as client:
+        response = await client.post(
+            f"{API_URL}/query",
+            json=payload
+        )
+    print(
+        f"[CHAINLIT] Query status: {response.status_code}",
+        flush=True
+    )
+
+    response.raise_for_status()
+
+    return response.json()

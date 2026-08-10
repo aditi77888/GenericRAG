@@ -1,0 +1,40 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **gdpr.pdf**  
+_855 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hello
+
+**Assistant:**
+Hello! I'm ready to help.
+
+---
+
+### 2. User
+what can you do for me.
+
+**Assistant:**
+Sab badhiya hai! Aap kya jaanna chahte hain?
+
+---
+
+### 3. User
+what does pdf contain
+
+**Assistant:**
+Based on the provided document context, the PDF contains information regarding personal data processing regulations and data subjects' rights, specifically covering:
+
+* **Personal Data Breaches:** Guidance on the timing of communications with data subjects to mitigate immediate damage versus taking time to implement measures against continuing breaches.
+* **Communication Standards:** Requirements that information and communications regarding data processing (such as online advertising) be concise, transparent, easily accessible, and in clear, plain language—especially when addressed to children.
+* **Information Delivery Methods:** Provisions allowing information to be provided in writing, electronically, or orally upon request (provided the data subject's identity is verified).
+* **Complaints and Representation:** Measures for supervisory authorities to facilitate complaint submissions (such as electronic forms) and the right
+
+---
+

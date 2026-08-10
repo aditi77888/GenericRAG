@@ -1,0 +1,19 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **aditi_Resume.pdf**  
+_7 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hello
+
+**Assistant:**
+Hi! How can I help you?
+
+---
+

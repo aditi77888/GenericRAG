@@ -1,0 +1,42 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+_No documents uploaded yet._
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hey
+
+**Assistant:**
+Hey, how's it going?
+
+---
+
+### 2. User
+what can you do for me?
+
+**Assistant:**
+मैं आपकी क्या मदद कर सकता हूँ? अगर आपने कोई पीडीएफ अपलोड की है, तो मैं उसके बारे में जानकारी दे सकता हूँ और आपके सवालों के जवाब दे सकता हूँ।
+
+---
+
+### 3. User
+can you speak only in english
+
+**Assistant:**
+I can speak only in English, and I'll make sure to keep our conversation in English from now on. Is there anything else I can help you with?
+
+---
+
+### 4. User
+who is rahul gandhi?
+
+**Assistant:**
+I can only answer questions related to the information available in the uploaded document.
+
+---
+

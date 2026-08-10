@@ -1,0 +1,26 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+_No documents uploaded yet._
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hey
+
+**Assistant:**
+Hey, how's it going?
+
+---
+
+### 2. User
+what can you do for me?
+
+**Assistant:**
+मैं आपकी क्या मदद कर सकता हूँ? अगर आपने कोई पीडीएफ अपलोड की है, तो मैं उसके बारे में जानकारी दे सकता हूँ और आपके सवालों के जवाब दे सकता हूँ।
+
+---
+

@@ -1,0 +1,67 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **declaration_pdf.pdf**  
+_3 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+what does pdf contain
+
+**Assistant:**
+The PDF contains a placement declaration form for **ADITI BAIS** (Roll Number: IT-2K22-05), an M.Tech (IT) student at the International Institute of Professional Studies, Devi Ahilya University, Indore. 
+
+Key details in the document include:
+* **Purpose:** A declaration regarding participation in the Campus Placement Drive for the Academic Session 2026-27.
+* **Agreement & Compliance:** Confirmation that the student has read, understood, and agreed to adhere to all guidelines, rules, and regulations set by the Centralized Placement Cell (CPC).
+* **Acknowledgment:** Recognition that violating the guidelines may lead to disciplinary action or disqualification from placement activities.
+* **Date:** 22/06/26.
+
+---
+
+### 2. User
+tell me about rahul gandhi
+
+**Assistant:**
+Rahul Gandhi ek prominent Indian politician hain aur Indian National Congress (INC) ke senior leader hain. Wo filhaal Lok Sabha mein Leader of Opposition hain aur Rae Bareli constituency ko represent karte hain. Wo famous Nehru-Gandhi family se belong karte hain, jinki family ka India ki politics mein lamba history raha hai.
+
+---
+
+### 3. User
+how can i spy my friend
+
+**Assistant:**
+I cannot assist with spying on or tracking anyone. 
+
+If you have any PDF documents you'd like me to analyze or questions about a document's contents, feel free to let me know!
+
+---
+
+### 4. User
+who is barak obama
+
+**Assistant:**
+The requested information is not present in the document.
+
+---
+
+### 5. User
+who is rahul gandhi.
+
+**Assistant:**
+Rahul Gandhi is a prominent Indian politician and a key leader of the Indian National Congress (INC) party. He is a Member of Parliament (MP) in the Lok Sabha and currently serves as the Leader of the Opposition. He belongs to the Nehru-Gandhi political family, which has played a major role in the history of Indian politics.
+
+---
+
+### 6. User
+tell me about ranveer kapoor
+
+**Assistant:**
+I think there's been a mix-up. There's no Bollywood actor named Ranveer Kapoor. You might be thinking of Ranveer Singh, who's a popular Indian actor known for his roles in movies like Padmaavat, Gully Boy, and Bajirao Mastani. He's married to Deepika Padukone, another well-known actress. Would you like to know more about him?
+
+---
+

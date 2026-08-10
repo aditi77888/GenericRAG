@@ -1,0 +1,18 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+_No documents uploaded yet._
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hello
+
+**Assistant:**
+Hello! I'm ready to help.
+
+---
+

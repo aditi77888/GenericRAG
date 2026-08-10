@@ -1,0 +1,35 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **declaration_pdf.pdf**  
+_3 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hello
+
+**Assistant:**
+Hello! How can I help you today?
+
+---
+
+### 2. User
+how can you help me.
+
+**Assistant:**
+Main aapke uploaded PDF documents ko samajhne aur unke baare mein aapke sawalon ke jawab dene mein madad kar sakta hoon. Aap kisi bhi PDF ko upload karke uske content, summary, ya specific details ke baare mein mujhse pooch sakte hain!
+
+---
+
+### 3. User
+how are you.
+
+**Assistant:**
+I'm doing well, thank you for asking! How are you doing today? How can I help you?
+
+---
+

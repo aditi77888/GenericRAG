@@ -1,0 +1,29 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **declaration_pdf.pdf**  
+_3 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hey
+
+**Assistant:**
+Hey there! How can I help you today? Feel free to ask any questions about your documents.
+
+---
+
+### 2. User
+what are ypur capabilities
+
+**Assistant:**
+I can help you analyze, summarize, and answer questions about your uploaded PDF documents. You can ask me about specific information within your files, request key takeaways, or clarify details from the text. 
+
+How can I help you today?
+
+---
+

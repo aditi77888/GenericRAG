@@ -1,135 +1,14 @@
-import random
-
 from agents.base_agent import BaseAgent
+from llms.llm_factory import LLMFactory
 
 
 class GreetingAgent(BaseAgent):
 
     def __init__(self):
 
-        # =====================================================
-        # ENGLISH
-        # =====================================================
-
-        self.responses = {
-
-            "english": {
-
-                "greeting": [
-
-                    "Hello! What would you like to know?",
-
-                    "Hi! How can I help you?",
-
-                    "Hey! What can I help you with?",
-
-                    "Hello! I'm ready to help.",
-
-                ],
-
-                "thanks": [
-
-                    "You're welcome!",
-
-                    "Happy to help!",
-
-                    "Anytime!",
-
-                    "Glad I could help!",
-
-                ],
-
-                "goodbye": [
-
-                    "Goodbye! Have a great day.",
-
-                    "Take care!",
-
-                    "See you later!",
-
-                    "Goodbye! Feel free to come back anytime.",
-
-                ],
-            },
-
-            # =================================================
-            # HINDI
-            # =================================================
-
-            "hindi": {
-
-                "greeting": [
-
-                    "नमस्ते! मैं आपकी कैसे सहायता कर सकता हूँ?",
-
-                    "प्रणाम! आप क्या जानना चाहते हैं?",
-
-                    "नमस्कार! मैं आपकी मदद करने के लिए यहाँ हूँ।",
-
-                ],
-
-                "thanks": [
-
-                    "कोई बात नहीं!",
-
-                    "आपका स्वागत है!",
-
-                    "खुशी हुई मदद करके!",
-
-                ],
-
-                "goodbye": [
-
-                    "अलविदा! आपका दिन शुभ हो।",
-
-                    "फिर मिलेंगे!",
-
-                    "अपना ध्यान रखिए!",
-
-                ],
-            },
-
-            # =================================================
-            # HINGLISH
-            # =================================================
-
-            "hinglish": {
-
-                "greeting": [
-
-                    "Hello! Main aapki help karne ke liye ready hoon.",
-
-                    "Hi! Main aapki kaise help kar sakta hoon?",
-
-                    "Hello! Bataiye, main aapki kya help kar sakta hoon?",
-
-                ],
-
-                "thanks": [
-
-                    "Koi baat nahi!",
-
-                    "You're welcome!",
-
-                    "Anytime!",
-
-                ],
-
-                "goodbye": [
-
-                    "Bye! Apna dhyan rakhna.",
-
-                    "See you later!",
-
-                    "Phir milte hain!",
-
-                ],
-            },
-        }
-
-    # =========================================================
-    # HANDLE
-    # =========================================================
+        self.llm = LLMFactory.create(
+            llm_name="fallback"
+        )
 
     def handle(
         self,
@@ -138,28 +17,88 @@ class GreetingAgent(BaseAgent):
         language: str
     ) -> str:
 
-        # -----------------------------------------------------
-        # Normalize language
-        # -----------------------------------------------------
+        query = query.strip()
 
-        language = language.lower().strip()
+        language = (
+            language or "english"
+        ).lower().strip()
 
-        if language not in self.responses:
+        intent = (
+            intent or "conversation"
+        ).lower().strip()
 
-            language = "english"
+        prompt = f"""
+You are the conversational assistant of a PDF-based RAG application.
 
-        # -----------------------------------------------------
-        # Normalize intent
-        # -----------------------------------------------------
+The user is having a conversational interaction. This request does
+NOT require retrieving information from uploaded documents.
 
-        if intent not in self.responses[language]:
+Respond naturally and appropriately to the user's message.
 
-            intent = "greeting"
+User message:
+{query}
 
-        # -----------------------------------------------------
-        # Select random response
-        # -----------------------------------------------------
+Detected language:
+{language}
 
-        return random.choice(
-            self.responses[language][intent]
-        )
+Detected intent:
+{intent}
+
+Rules:
+
+1. Do NOT retrieve information from documents.
+2. Do NOT mention Pinecone, embeddings, vector databases, RAG,
+   retrieval, agents, routing, or internal implementation.
+3. Do NOT make up information from any uploaded PDF.
+4. Understand the user's actual message yourself. The detected intent
+   is only a hint and should not override the meaning of the query.
+5. Respond in the same language as the user.
+6. If the user uses Hinglish, respond naturally in Hinglish.
+7. Keep the response concise and conversational.
+8. If the user asks what you can do or how you can help, explain that
+   you can process uploaded PDF documents and answer questions about
+   their contents.
+9. If the user greets you, greet them naturally.
+10. If the user thanks you, respond appropriately.
+11. If the user says goodbye, respond appropriately.
+12. Do not use a fixed or predefined response. Generate the response
+    based on the user's actual message.
+
+Return only the response to the user.
+"""
+
+        try:
+
+            response = self.llm.generate(
+                prompt
+            )
+
+            if response is None:
+                return (
+                    "Hello! How can I help you?"
+                )
+
+            response = str(
+                response
+            ).strip()
+
+            if not response:
+                return (
+                    "Hello! How can I help you?"
+                )
+
+            return response
+
+        except Exception as e:
+
+            print(
+                "[GREETING AGENT] LLM failed:",
+                repr(e),
+                flush=True
+            )
+
+            # Very small emergency fallback.
+            # This is NOT the normal response mechanism.
+            return (
+                "Hello! How can I help you?"
+            )

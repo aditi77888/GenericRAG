@@ -1,0 +1,33 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **declaration_pdf.pdf**  
+_3 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hey
+
+**Assistant:**
+Hello! I'm ready to help.
+
+---
+
+### 2. User
+what does pdf contain
+
+**Assistant:**
+The PDF contains a declaration form for the Campus Placement Drive for the 2026–27 Academic Session at the International Institute of Professional Studies (IIPS), Devi Ahilya University, Indore. 
+
+It includes the following details:
+* **Student Information:** Name: ADITI BAIS, Roll Number: IT-2K22-05, Program: M.Tech (IT) Batch.
+* **Declaration:** A statement declaring agreement to participate in the placement drive.
+* **CPC Guidelines Undertaking:** Confirmation that the student has read, understood, and agreed to adhere to all guidelines, rules, and regulations set by the Centralized Placement Cell (CPC), as well as an acknowledgment that violations may result in disciplinary action or disqualification.
+* **Date and Signature Section:** Dated 22/06/26 with a space for the student's signature.
+
+---
+

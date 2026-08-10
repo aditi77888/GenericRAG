@@ -1,0 +1,51 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **declaration_pdf.pdf**  
+_3 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hey
+
+**Assistant:**
+Hey there! How can I help you today? Feel free to ask any questions about your documents.
+
+---
+
+### 2. User
+what are ypur capabilities
+
+**Assistant:**
+I can help you analyze, summarize, and answer questions about your uploaded PDF documents. You can ask me about specific information within your files, request key takeaways, or clarify details from the text. 
+
+How can I help you today?
+
+---
+
+### 3. User
+what does pdf contain
+
+**Assistant:**
+The PDF contains a placement declaration form for **ADITI BAIS** (Roll Number: IT-2K22-05), an M.Tech (IT) student at the International Institute of Professional Studies, Devi Ahilya University, Indore. 
+
+Key details in the document include:
+* **Purpose:** A declaration regarding participation in the Campus Placement Drive for the Academic Session 2026-27.
+* **Agreement & Compliance:** Confirmation that the student has read, understood, and agreed to adhere to all guidelines, rules, and regulations set by the Centralized Placement Cell (CPC).
+* **Acknowledgment:** Recognition that violating the guidelines may lead to disciplinary action or disqualification from placement activities.
+* **Date:** 22/06/26.
+
+---
+
+### 4. User
+tell me about rahul gandhi
+
+**Assistant:**
+Rahul Gandhi ek prominent Indian politician hain aur Indian National Congress (INC) ke senior leader hain. Wo filhaal Lok Sabha mein Leader of Opposition hain aur Rae Bareli constituency ko represent karte hain. Wo famous Nehru-Gandhi family se belong karte hain, jinki family ka India ki politics mein lamba history raha hai.
+
+---
+

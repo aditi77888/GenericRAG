@@ -1,0 +1,27 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **aditi_Resume.pdf**  
+_7 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hi
+
+**Assistant:**
+Hey! What can I help you with?
+
+---
+
+### 2. User
+whats on first page
+
+**Assistant:**
+The first page of the document contains information about Aditi's resume, including her projects such as YouTube RAG Chatbot, Parkinson’s Disease Prediction, Emotion-Based Music Recommender, and KisanSaathi. It also lists her technical skills, education, and contact information.
+
+---
+

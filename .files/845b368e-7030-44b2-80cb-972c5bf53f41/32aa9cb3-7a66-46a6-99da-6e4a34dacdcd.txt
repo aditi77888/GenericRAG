@@ -1,0 +1,65 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **declaration_pdf.pdf**  
+_3 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+how can you help me.
+
+**Assistant:**
+Main aapke uploaded PDF documents ko samajhne aur unke baare mein aapke sawalon ke jawab dene mein madad kar sakta hoon. Aap kisi bhi PDF ko upload karke uske content, summary, ya specific details ke baare mein mujhse pooch sakte hain!
+
+---
+
+### 2. User
+how are you.
+
+**Assistant:**
+I'm doing well, thank you for asking! How are you doing today? How can I help you?
+
+---
+
+### 3. User
+what is on page 1.
+
+**Assistant:**
+Page 1 contains a **Declaration form** for the Campus Placement Drive (Academic Session 2026-27) from the International Institute of Professional Studies, Devi Ahilya University, Indore. 
+
+Key details on Page 1 include:
+* **Student Details:** Name: ADITI BAIS, Roll Number: IT-2K22-05, Program: M.Tech (IT) Batch.
+* **Declaration:** Agreement to participate in the Campus Placement Drive.
+* **Placement Rules & Undertaking:** Confirmation of reading, understanding, and agreeing to comply with the guidelines set by the Centralized Placement Cell (CPC), as well as acknowledgment that violations may lead to disciplinary action or disqualification.
+* **Date & Signature:** Date listed as 22/06/26 along with a space for the student's signature.
+
+---
+
+### 4. User
+how many pages are there in pdf
+
+**Assistant:**
+The requested information is not present in the document.
+
+---
+
+### 5. User
+bye
+
+**Assistant:**
+Goodbye! Have a great day, and feel free to reach out whenever you need help again!
+
+---
+
+### 6. User
+who are you?
+
+**Assistant:**
+I'm an AI assistant here to help you read, summarize, and answer questions about your uploaded PDF documents. How can I help you today?
+
+---
+

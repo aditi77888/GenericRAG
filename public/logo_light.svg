@@ -1,0 +1,7 @@
+<svg width="360" height="100" viewBox="0 0 360 100" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(10,10)">
+    <!-- four-petal mark, matches Chainlit's pink icon style -->
+    <path d="M40 4 C46 20, 60 34, 76 40 C60 46, 46 60, 40 76 C34 60, 20 46, 4 40 C20 34, 34 20, 40 4 Z" fill="#F52A63"/>
+  </g>
+  <text x="100" y="60" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-size="42" font-weight="700" fill="#1A1A1A">Assistant</text>
+</svg>

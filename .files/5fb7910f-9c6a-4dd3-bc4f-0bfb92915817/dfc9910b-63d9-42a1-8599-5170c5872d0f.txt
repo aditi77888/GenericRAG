@@ -1,0 +1,51 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **aditi_Resume.pdf**  
+_7 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hello
+
+**Assistant:**
+Hi! How can I help you?
+
+---
+
+### 2. User
+what does the document contain
+
+**Assistant:**
+The document is the resume of **Aditi Bais**. It contains the following key sections and details:
+
+* **Contact Information:** Phone number, email, and profiles (GitHub/portfolio).
+* **Education:** 
+  * M.Tech in Information Technology from International Institute of Professional Studies (CGPA: 8.87/10).
+  * Senior Secondary (Class 12th) and Secondary School (Class 10th) Certificates from Sideras International School.
+* **Technical Skills:** 
+  * **Languages:** Python, Javascript, SQL.
+  * **Frameworks/Libraries:** Flask, PyTorch, OpenCV, NumPy, Pandas, Sklearn, Streamlit, LangChain, TensorFlow/Keras.
+  * **Tools & Databases:** Git, GitHub, Jupyter Notebook, PyCharm, Oracle, PostgreSQL.
+  * **Operating Systems:** Linux, Windows.
+  * **Relevant Coursework:** Computer Vision, Statistical Methods in AI, Machine Data and Learning, Data Structures & Algorithms, Distributed Systems, and others.
+* **Projects:**
+  * **KisanSaathi:** A multilingual agricultural chatbot using RAG and a CNN-based crop disease detection module.
+  * **Emotion-Based Music Recommender:** A real-time facial emotion detection model using CNN and OpenCV, integrated with the Spotipy API for song recommendations.
+  * **YouTube RAG Chatbot:** A pipeline built with LangChain, FAISS, YouTube Transcript API, and Streamlit for question-answering over YouTube videos.
+  * **Parkinson’s Disease Prediction:** A Python and ML project.
+
+---
+
+### 3. User
+how many pages are there in document
+
+**Assistant:**
+The requested information is not present in the document.
+
+---
+

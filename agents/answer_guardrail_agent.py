@@ -66,23 +66,48 @@ class AnswerGuardrailAgent(BaseAgent):
         # =====================================================
         # BUILD CONTEXT
         # =====================================================
+        # =====================================================
+        # BUILD CONTEXT
+        # =====================================================
 
         context_parts = []
 
-        for i, chunk in enumerate(chunks):
+        for i, chunk in enumerate(chunks, start=1):
+            metadata = chunk.metadata or {}
 
-            text = chunk.content
+            file_name = metadata.get(
+                "file_name",
+                metadata.get("source", "Unknown")
+            )
+
+            page = metadata.get(
+                "page",
+                "Unknown"
+            )
 
             context_parts.append(
                 f"""
---- CONTEXT CHUNK {i + 1} ---
+        --- CONTEXT CHUNK {i} ---
+        FILE: {file_name}
+        PAGE: {page}
 
-{text}
-"""
+        CONTENT:
+        {chunk.content}
+
+        --- END CHUNK {i} ---
+        """
             )
 
-        context = "\n".join(
-            context_parts
+        context = "\n".join(context_parts)
+
+        print(
+            "\n[ANSWER GUARDRAIL] CONTEXT SENT FOR VALIDATION:",
+            flush=True
+        )
+
+        print(
+            context,
+            flush=True
         )
 
         # =====================================================
@@ -90,58 +115,46 @@ class AnswerGuardrailAgent(BaseAgent):
         # =====================================================
 
         prompt = f"""
-You are an Answer Validation Guardrail for a RAG system.
+        You are an Answer Validation Guardrail for a RAG system.
 
-Your job is to determine whether the generated answer is
-supported by the retrieved document context.
+        Your ONLY job is to determine whether the generated answer
+        is supported by the retrieved document context.
 
-You MUST NOT answer the user's question.
+        USER QUESTION:
+        {question}
 
-You ONLY validate the generated answer.
+        RETRIEVED DOCUMENT CONTEXT:
+        {context}
 
-USER QUESTION:
-{question}
+        GENERATED ANSWER:
+        {answer}
 
-RETRIEVED DOCUMENT CONTEXT:
-{context}
+        Rules:
 
-GENERATED ANSWER:
-{answer}
+        1. The answer must be supported by the CONTENT or METADATA.
+        2. PAGE metadata is authoritative for page-related questions.
+        3. FILE metadata is authoritative for file-related questions.
+        4. If the answer correctly states information contained
+           in the retrieved content, it is grounded.
+        5. Do not require the words "page 1", "page 2", etc. to
+           literally appear inside the OCR text when PAGE metadata
+           identifies the page.
+        6. If the answer says information is unavailable, only mark
+           it relevant if the requested information truly cannot
+           be obtained from the provided context.
+        7. Do not use outside knowledge.
 
-Evaluate the generated answer using these rules:
+        Return ONLY valid JSON:
 
-1. GROUNDED
-   The answer must be directly supported by the retrieved
-   document context.
-
-2. NO HALLUCINATION
-   The answer must not introduce facts, names, numbers,
-   dates, claims, or explanations that are not supported
-   by the retrieved context.
-
-3. QUESTION RELEVANCE
-   The answer must actually answer the user's question.
-
-4. NO OUTSIDE KNOWLEDGE
-   Do not allow information that comes from general knowledge
-   rather than the retrieved document.
-
-5. PARTIAL ANSWERS
-   If only part of the answer is supported by the context,
-   mark it as not grounded.
-
-Return ONLY valid JSON.
-
-Required format:
-
-{{
-    "grounded": true or false,
-    "relevant": true or false,
-    "hallucination": true or false,
-    "category": "grounded" or "unsupported_claim" or "hallucination" or "irrelevant",
-    "reason": "short explanation"
-}}
-"""
+        {{
+            "grounded": true or false,
+            "relevant": true or false,
+            "hallucination": true or false,
+            "category": "grounded" or "unsupported_claim" or
+                         "hallucination" or "irrelevant",
+            "reason": "short explanation"
+        }}
+        """
 
         # =====================================================
         # CALL VALIDATION LLM
@@ -192,14 +205,18 @@ Required format:
         # REJECT
         # =====================================================
 
+        # =====================================================
+        # REJECT
+        # =====================================================
+
         return {
             "allowed": False,
             "grounded": False,
             "category": validation["category"],
             "reason": validation["reason"],
             "answer": (
-                "I couldn't verify that answer against "
-                "the information available in the document."
+                "The requested information is not present "
+                "in the document."
             ),
             "agent": "answer_guardrail"
         }

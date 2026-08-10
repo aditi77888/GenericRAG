@@ -1,0 +1,34 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+_No documents uploaded yet._
+
+---
+
+## 💬 Conversations
+
+### 1. User
+my name ij vaibhav
+
+**Assistant:**
+Hey! What can I help you with?
+
+---
+
+### 2. User
+you can help me with doc
+
+**Assistant:**
+Koi baat nahi!
+
+---
+
+### 3. User
+are you mad
+
+**Assistant:**
+Doing great! Ready whenever you are — what do you need?
+
+---
+

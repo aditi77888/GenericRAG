@@ -1,0 +1,27 @@
+# 💬 Chat History
+
+## 📄 Uploaded Documents
+
+📄 **gdpr.pdf**  
+_855 chunks indexed_
+
+---
+
+## 💬 Conversations
+
+### 1. User
+hello
+
+**Assistant:**
+Hello! I'm ready to help.
+
+---
+
+### 2. User
+what can you do for me.
+
+**Assistant:**
+Sab badhiya hai! Aap kya jaanna chahte hain?
+
+---
+

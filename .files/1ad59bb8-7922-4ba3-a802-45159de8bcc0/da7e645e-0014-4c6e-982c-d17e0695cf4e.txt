@@ -1,0 +1,10 @@
+# 💬 Chat History
+
+### 1. User
+hi
+
+**Assistant:**
+Hey! What can I help you with?
+
+---
+
